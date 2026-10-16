@@ -1,0 +1,10 @@
+NativeLzma.dll uses the official LZMA SDK 25.01 by Igor Pavlov.
+LZMA SDK is placed in the public domain.
+Source: https://www.7-zip.org/a/lzma2501.7z
+Website: https://www.7-zip.org/sdk.html
+
+Anyone is free to copy, modify, publish, use, compile, sell, or distribute
+the original LZMA SDK code, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any means.
+
+This module encodes ordinary LZMA, not LZMA2 or LZ4 data blocks.
