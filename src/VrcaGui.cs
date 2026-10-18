@@ -1829,32 +1829,40 @@ namespace VrcaUploader
         {
             var dir = Path.Combine(_baseDir, "_runtime", "assets");
             Directory.CreateDirectory(dir);
-            var path = Path.Combine(dir, "default-cover.png");
+            var path = Path.Combine(dir, "mianchuan-cover-v2.png");
             if (File.Exists(path)) return path;
 
-            using (var bmp = new Bitmap(512, 512))
+            SaveWorkspaceCover(path);
+            return path;
+        }
+
+        static void SaveWorkspaceCover(string path)
+        {
+            using (var bmp = new Bitmap(512, 384))
             using (var g = Graphics.FromImage(bmp))
             {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
-                using (var brush = new LinearGradientBrush(new Rectangle(0, 0, 512, 512), Color.FromArgb(18, 22, 32), Color.FromArgb(25, 91, 84), 45f))
-                    g.FillRectangle(brush, 0, 0, 512, 512);
-                using (var pen = new Pen(Color.FromArgb(80, 87, 211, 255), 2f))
+                using (var brush = new LinearGradientBrush(new Rectangle(0, 0, 512, 384), Color.FromArgb(24, 48, 57), Color.FromArgb(88, 132, 128), 90f))
+                    g.FillRectangle(brush, 0, 0, 512, 384);
+                using (var moon = new SolidBrush(Color.FromArgb(240, 225, 184)))
+                    g.FillEllipse(moon, 340, 56, 74, 74);
+                using (var far = new SolidBrush(Color.FromArgb(66, 105, 110)))
+                    g.FillPolygon(far, new[] { new Point(0, 234), new Point(106, 123), new Point(212, 232), new Point(307, 156), new Point(512, 261), new Point(512, 384), new Point(0, 384) });
+                using (var near = new SolidBrush(Color.FromArgb(30, 74, 79)))
+                    g.FillPolygon(near, new[] { new Point(0, 302), new Point(164, 202), new Point(312, 302), new Point(424, 224), new Point(512, 286), new Point(512, 384), new Point(0, 384) });
+                using (var river = new GraphicsPath())
+                using (var water = new SolidBrush(Color.FromArgb(145, 184, 167)))
                 {
-                    for (var i = -80; i < 640; i += 42)
-                        g.DrawLine(pen, i, 512, i + 180, 0);
-                }
-                using (var font = UiFont(40f, FontStyle.Bold))
-                using (var small = UiFont(16f, FontStyle.Regular))
-                using (var white = new SolidBrush(Color.White))
-                using (var green = new SolidBrush(Accent))
-                {
-                    g.DrawString("VRC", font, white, 78, 170);
-                    g.DrawString("HOT UPLOAD", small, green, 84, 246);
-                    g.DrawString("Default Cover", small, white, 84, 282);
+                    river.AddBezier(286, 258, 196, 291, 398, 296, 248, 346);
+                    river.AddBezier(248, 346, 204, 361, 172, 373, 154, 384);
+                    river.AddLine(154, 384, 342, 384);
+                    river.AddBezier(342, 384, 311, 366, 299, 358, 308, 349);
+                    river.AddBezier(308, 349, 411, 301, 241, 283, 294, 258);
+                    river.CloseFigure();
+                    g.FillPath(water, river);
                 }
                 bmp.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             }
-            return path;
         }
 
         void PickAndPairWorldFiles(bool preferQuestSlot)
@@ -4525,40 +4533,7 @@ namespace VrcaUploader
 
             static void SaveDefaultCoverAsPng(string path, string modelName)
             {
-                const int width = 1200;
-                const int height = 900;
-                using (var bitmap = new Bitmap(width, height))
-                using (var graphics = Graphics.FromImage(bitmap))
-                using (var gradient = new LinearGradientBrush(
-                    new Rectangle(0, 0, width, height),
-                    Color.FromArgb(8, 15, 27),
-                    Color.FromArgb(8, 70, 76),
-                    28f))
-                using (var linePen = new Pen(Color.FromArgb(38, 113, 122), 3f))
-                using (var titleFont = UiFont(48f, FontStyle.Bold))
-                using (var tagFont = UiFont(18f, FontStyle.Bold))
-                using (var titleBrush = new SolidBrush(Color.FromArgb(238, 248, 250)))
-                using (var tagBrush = new SolidBrush(Color.FromArgb(111, 231, 222)))
-                {
-                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                    graphics.FillRectangle(gradient, 0, 0, width, height);
-                    for (var x = -height; x < width; x += 96)
-                        graphics.DrawLine(linePen, x, height, x + height, 0);
-
-                    var safeName = string.IsNullOrEmpty(modelName) ? "VRCA MODEL" : modelName;
-                    var titleArea = new RectangleF(100, 310, width - 200, 220);
-                    var format = new StringFormat
-                    {
-                        Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Center,
-                        Trimming = StringTrimming.EllipsisCharacter
-                    };
-                    graphics.DrawString(safeName, titleFont, titleBrush, titleArea, format);
-                    graphics.DrawString("AVATAR ARCHIVE", tagFont, tagBrush, 100, 690);
-                    bitmap.Save(path, ImageFormat.Png);
-                    format.Dispose();
-                }
+                SaveWorkspaceCover(path);
             }
 
             static bool SaveMetadataText(VrcaClient.VrcaFileEntry entry, string vrcaPath)

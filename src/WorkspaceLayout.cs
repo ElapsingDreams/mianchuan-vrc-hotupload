@@ -143,6 +143,7 @@ namespace VrcaUploader
             var releaseHint=DevLabel(_vrcaModePanel,"private：私有 / public：公开",247,594,429,33,14,TextMuted);releaseHint.Anchor=AnchorStyles.Top|AnchorStyles.Left|AnchorStyles.Right;
             _vrca.TextChanged+=delegate { if(!string.IsNullOrWhiteSpace(_vrca.Text)) _name.Text=Path.GetFileNameWithoutExtension(_vrca.Text); };
             _image.TextChanged+=delegate { DevCover(devModelCover,_image.Text); };
+            _image.Text=EnsureDefaultCoverFile();
             _vrcaModePanel.AllowDrop=true; _vrcaModePanel.DragEnter+=delegate(object s,DragEventArgs e){if(e.Data.GetDataPresent(DataFormats.FileDrop))e.Effect=DragDropEffects.Copy;};
             _vrcaModePanel.DragDrop+=delegate(object s,DragEventArgs e){ var f=e.Data.GetData(DataFormats.FileDrop) as string[]; if(f!=null && f.Length==1 && Path.GetExtension(f[0]).Equals(".vrca",StringComparison.OrdinalIgnoreCase))_vrca.Text=f[0]; else SetCustomerStatus("请拖入一个 VRCA 文件；批量任务请使用文件夹扫描。"); };
             _vrcwModePanel=MakeCard(Point.Empty,new Size(700,924)); devEditor.Controls.Add(_vrcwModePanel);
@@ -163,6 +164,7 @@ namespace VrcaUploader
             _vrcw.TextChanged+=delegate { _worldSignatureInputs.ClearPc(); if(!string.IsNullOrWhiteSpace(_vrcw.Text))_vrcwName.Text=Path.GetFileNameWithoutExtension(_vrcw.Text); _worldPairStatus.Text=string.IsNullOrEmpty(_vrcwQuest.Text)?"已选择 PC，未添加 Quest":"已选择两个文件；上传时会校验实际平台"; };
             _vrcwQuest.TextChanged+=delegate { _worldSignatureInputs.ClearQuest(); _worldSignatureInputs.SetTarget(_worldIdBox.Text,!string.IsNullOrWhiteSpace(_vrcwQuest.Text)); _worldPairStatus.Text=string.IsNullOrEmpty(_vrcwQuest.Text)?"未添加 Quest 文件":"已选择两个文件；上传时会校验实际平台"; };
             _vrcwImage.TextChanged+=delegate { DevCover(devWorldCover,_vrcwImage.Text); };
+            _vrcwImage.Text=EnsureDefaultCoverFile();
             devEditorScroll=new ScrollViewport(devEditor); devBody.Controls.Add(devEditorScroll);
             devActions=new Panel { BackColor=Bg,Width=700,Height=56 }; devBody.Controls.Add(devActions);
             for(int mode=0;mode<2;mode++) {
